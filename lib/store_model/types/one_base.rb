@@ -48,7 +48,16 @@ module StoreModel
 
       # rubocop:disable Style/RescueModifier
       def decode_and_initialize(value)
-        decoded = ActiveSupport::JSON.decode(value) rescue nil
+        decoded =
+          case @storage
+          when :json
+            ActiveSupport::JSON.decode(value) rescue nil
+          when :hstore
+            ActiveRecord::ConnectionAdapters::PostgreSQL::OID::Hstore.new.deserialize(value)
+          else
+            raise "TODO"
+          end
+
         model_instance(decoded) unless decoded.nil?
       rescue ActiveModel::UnknownAttributeError => e
         handle_unknown_attribute(decoded, e)

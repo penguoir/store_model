@@ -3,7 +3,9 @@
 require "spec_helper"
 
 RSpec.describe StoreModel::Types::One do
-  let(:type) { described_class.new(Configuration) }
+  let(:type) { described_class.new(Configuration, storage) }
+
+  let(:storage) { :json }
 
   let(:attributes) do
     {
@@ -133,7 +135,7 @@ RSpec.describe StoreModel::Types::One do
           end
         end
 
-        let(:type) { described_class.new(configuration_class) }
+        let(:type) { described_class.new(configuration_class, :json) }
 
         let(:supplier) { { unknown_attribute: "something" } }
         let(:attributes) { { color: "red", suppliers: [supplier] } }
